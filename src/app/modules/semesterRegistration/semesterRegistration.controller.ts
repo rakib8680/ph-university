@@ -3,9 +3,12 @@ import sendResponse from '../../utils/sendResponse';
 import catchAsync from '../../utils/catchAsync';
 import { SemesterRegistrationService } from './semesterRegistration.service';
 
+// create register semester
 const createSemesterRegistration = catchAsync(async (req, res) => {
   const result =
-    await SemesterRegistrationService.createSemesterRegistrationIntoDB(req.body);
+    await SemesterRegistrationService.createSemesterRegistrationIntoDB(
+      req.body,
+    );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -15,6 +18,22 @@ const createSemesterRegistration = catchAsync(async (req, res) => {
   });
 });
 
+// get all registered semester
+const getAllSemesterRegistrations = catchAsync(async (req, res) => {
+  const result =
+    await SemesterRegistrationService.getAllSemesterRegistrationsFromDB(
+      req.query,
+    );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Semester Registration is retrieved successfully !',
+    data: result,
+  });
+});
+
 export const SemesterRegistrationController = {
   createSemesterRegistration,
+  getAllSemesterRegistrations,
 };
