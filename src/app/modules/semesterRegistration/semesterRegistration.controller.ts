@@ -53,3 +53,4 @@ export const SemesterRegistrationController = {
   getAllSemesterRegistrations,
   getSingleSemesterRegistration,
 };
+    
