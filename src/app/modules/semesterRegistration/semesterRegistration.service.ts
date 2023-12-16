@@ -23,11 +23,11 @@ const createSemesterRegistrationIntoDB = async (
     status: { $in: ['UPCOMING', 'ONGOING'] },
   });
 
-  if(checkUpcomingOrOngoingSemester) {
+  if (checkUpcomingOrOngoingSemester) {
     throw new AppError(
-        httpStatus.NOT_FOUND,
-        `There is already an ${checkUpcomingOrOngoingSemester.status} registered semester !`,
-      );
+      httpStatus.NOT_FOUND,
+      `There is already an ${checkUpcomingOrOngoingSemester.status} registered semester !`,
+    );
   }
 
   // check if the semester is exist
@@ -83,8 +83,54 @@ const getSingleSemesterRegistrationsFromDB = async (id: string) => {
   return result;
 };
 
+// update registered semester
+const updateSemesterRegistrationIntoDB = async (
+  id: string,
+  payload: Partial<TSemesterRegistration>,
+) => {
+  // check if the semester is already exist!
+  const isSemesterRegistrationExists = await SemesterRegistration.findById(id);
+
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This semester is not found !');
+  }
+
+  //if the requested semester registration is ended , we will not update anything
+  const currentSemesterStatus = isSemesterRegistrationExists.status;
+  if (currentSemesterStatus === 'ENDED') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `This semester is already ${currentSemesterStatus}`,
+    );
+  }
+
+  // UPCOMING --> ONGOING --> ENDED
+  const requestedStatus = payload.status;
+  if (currentSemesterStatus === 'UPCOMING' && requestedStatus === 'ENDED') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You can not directly change status from ${currentSemesterStatus} to ${requestedStatus}`,
+    );
+  }
+
+  if (currentSemesterStatus === 'ONGOING' && requestedStatus === 'UPCOMING') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You can not directly change status from ${currentSemesterStatus} to ${requestedStatus}`,
+    );
+  }
+
+  const result = await SemesterRegistration.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return result;
+};
+
 export const SemesterRegistrationService = {
   createSemesterRegistrationIntoDB,
   getAllSemesterRegistrationsFromDB,
   getSingleSemesterRegistrationsFromDB,
+  updateSemesterRegistrationIntoDB,
 };
