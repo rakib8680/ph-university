@@ -7,7 +7,7 @@ import { AcademicFaculty } from '../academicFaculty/academicFaculty.model';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
-import { hasTimeConflict } from './offeredCoure.utils';
+import { hasTimeConflict } from './offeredCourse.utils';
 import QueryBuilder from '../../builder/QueryBuilder';
 
 // create offered corse
