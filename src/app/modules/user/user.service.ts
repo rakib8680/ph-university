@@ -151,7 +151,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     // create a user (transaction-1)
     const newUser = await User.create([userData], { session }); 
 
-    //create a admin
+    //create an admin
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create admin');
     }
@@ -159,7 +159,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; //reference _id
 
-    // create a admin (transaction-2)
+    // create an admin (transaction-2)
     const newAdmin = await Admin.create([payload], { session });
 
     if (!newAdmin.length) {
