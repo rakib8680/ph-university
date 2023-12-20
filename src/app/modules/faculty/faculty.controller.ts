@@ -28,7 +28,6 @@ const getSingleFaculty = catchAsync(async (req, res) => {
 //   get all faculties
 const getAllFaculties = catchAsync(async (req, res) => {
     const result = await FacultyServices.getAllFacultiesFromDB(req.query);
-  
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
