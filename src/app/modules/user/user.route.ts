@@ -4,12 +4,14 @@ import { createAdminValidationSchema } from '../admin/admin.validation';
 import { createFacultyValidationSchema } from '../faculty/faculty.validation';
 import { studentValidations } from '../student/student.zod.validation';
 import { userControllers } from './user.controller';
+import auth from '../../middlewares/auth';
 
 const router = express.Router();
 
 // create student
 router.post(
   '/create-student',
+  auth(),
   validateRequest(studentValidations.CreateStudentValidationSchema),
   userControllers.createStudent,
 );
@@ -25,6 +27,5 @@ router.post(
   validateRequest(createAdminValidationSchema),
   userControllers.createAdmin,
 );
-
 
 export const userRoutes = router;
