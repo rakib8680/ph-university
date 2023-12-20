@@ -57,7 +57,7 @@ userSchema.statics.isPasswordMatched = async function (
 };
 
 // check if the jwt is issued before password changed
-userSchema.statics.sJWTIssuedBeforePasswordChanged = function (
+userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
   passwordChangedTimeStamp: Date,
   jwtIssuedTimeStamp: number,
 ) {

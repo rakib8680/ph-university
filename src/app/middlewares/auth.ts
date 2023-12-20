@@ -52,9 +52,11 @@ const auth = (...requiredRoles: TUserRole[]) => {
         user.passwordChangedAt,
         iat as number,
       )
-    )
-      // set the user in req object
-      req.user = decoded as JwtPayload;
+    ) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+    }
+    // set the user in req object
+    req.user = decoded as JwtPayload;
     next();
   });
 };
