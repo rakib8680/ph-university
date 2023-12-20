@@ -20,7 +20,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       config.jwt_access_secret as string,
     ) as JwtPayload;
 
-    const { role, userId, iat, exp } = decoded;
+    const { role, userId, iat } = decoded;
 
     // checking if the user is exist
     const user = await User.isUserExistsByCustomId(userId);
@@ -45,8 +45,16 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
     }
 
-    // set the user in req object
-    req.user = decoded as JwtPayload;
+    // checking if the jwt is issued before password changed
+    if (
+      user.passwordChangedAt &&
+      User.isJWTIssuedBeforePasswordChanged(
+        user.passwordChangedAt,
+        iat as number,
+      )
+    )
+      // set the user in req object
+      req.user = decoded as JwtPayload;
     next();
   });
 };
