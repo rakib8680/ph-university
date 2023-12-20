@@ -70,6 +70,7 @@ import { StudentModel } from './student.model';
 const getAllStudentFromDB = async (query: Record<string, unknown>) => {
   const studentQuery = new QueryBuilder(
     StudentModel.find()
+      .populate('user')
       .populate('admissionSemester')
       .populate({
         path: 'academicDepartment',
@@ -90,8 +91,6 @@ const getAllStudentFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
-
-
 // get single student
 const getSingleStudentFromDB = async (id: string) => {
   const result = await StudentModel.findById(id)
@@ -104,8 +103,6 @@ const getSingleStudentFromDB = async (id: string) => {
     });
   return result;
 };
-
-
 
 // update student
 const updateStudentIntoDB = async (id: string, payload: Partial<Student>) => {
@@ -130,8 +127,6 @@ const updateStudentIntoDB = async (id: string, payload: Partial<Student>) => {
   return result;
 };
 
-
-
 // delete student/user
 const deleteStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
@@ -145,12 +140,12 @@ const deleteStudentFromDB = async (id: string) => {
       { isDeleted: true },
       { new: true, session },
     );
-    if (!deletedStudent){
+    if (!deletedStudent) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Student not deleted');
-    };
+    }
 
-    // get user _id from deleted student 
-    const userId = deletedStudent.user 
+    // get user _id from deleted student
+    const userId = deletedStudent.user;
 
     // DELETE user
     const deletedUser = await User.findByIdAndUpdate(
@@ -171,8 +166,6 @@ const deleteStudentFromDB = async (id: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
   }
 };
-
-
 
 export const studentServices = {
   getAllStudentFromDB,

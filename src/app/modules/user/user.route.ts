@@ -5,25 +5,30 @@ import { createFacultyValidationSchema } from '../faculty/faculty.validation';
 import { studentValidations } from '../student/student.zod.validation';
 import { userControllers } from './user.controller';
 import auth from '../../middlewares/auth';
+import { USER_ROLE } from './user.constant';
 
 const router = express.Router();
 
 // create student
 router.post(
   '/create-student',
-  auth(),
+  auth(USER_ROLE.admin),
   validateRequest(studentValidations.CreateStudentValidationSchema),
   userControllers.createStudent,
 );
 
+// create faculty
 router.post(
   '/create-faculty',
+  auth(USER_ROLE.admin),
   validateRequest(createFacultyValidationSchema),
   userControllers.createFaculty,
 );
 
+// create admin
 router.post(
   '/create-admin',
+  // auth(USER_ROLE.admin),
   validateRequest(createAdminValidationSchema),
   userControllers.createAdmin,
 );

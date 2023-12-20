@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/appError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 
 const loginUser = async (payload: TLoginUser) => {
@@ -45,6 +45,11 @@ const loginUser = async (payload: TLoginUser) => {
   };
 };
 
+const changePassword = async (user: JwtPayload, payload) => {
+  
+};
+
 export const AuthServices = {
   loginUser,
+  changePassword,
 };

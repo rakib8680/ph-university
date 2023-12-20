@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 const userSchema = new Schema<TUser, userModel>(
   {
     id: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: 0 },
     needsPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
@@ -44,7 +44,7 @@ userSchema.post('save', function (doc, next) {
 
 // static method
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-  return await User.findOne({ id });
+  return await User.findOne({ id }).select('+password');
 };
 // static method
 userSchema.statics.isPasswordMatched = async function (
