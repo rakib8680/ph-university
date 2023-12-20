@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/appError';
 import { User } from '../user/user.model';
 import { TLoginUser } from './auth.interface';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import bcrypt from 'bcrypt';
 import { createToken } from './auth.utils';
