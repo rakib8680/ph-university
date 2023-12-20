@@ -5,6 +5,7 @@ import { USER_ROLE } from './user.constant';
 export interface TUser {
   id: string;
   password: string;
+  passwordChangedAt?: Date;
   needsPasswordChange: boolean;
   role: 'admin' | 'student' | 'faculty';
   status: 'in-progress' | 'blocked';

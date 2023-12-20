@@ -7,6 +7,7 @@ const userSchema = new Schema<TUser, userModel>(
   {
     id: { type: String, required: true, unique: true },
     password: { type: String, required: true, select: 0 },
+    passwordChangedAt:{type:Date},
     needsPasswordChange: { type: Boolean, default: true },
     role: {
       type: String,
