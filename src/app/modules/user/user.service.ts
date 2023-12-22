@@ -17,7 +17,6 @@ import { TFaculty } from '../faculty/faculty.interface';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
-import { verifyToken } from '../Auth/auth.utils';
 
 // create student
 const createStudentIntoDB = async (password: string, payload: Student) => {
@@ -185,24 +184,25 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
 };
 
 // get me
-const getMe = async (token: string) => {
-  // verify token
-  const decoded = verifyToken(token, config.jwt_access_secret as string);
-
-  const { userId, role } = decoded;
-
+const getMe = async (userId: string, role: string) => {
   let result = null;
 
   if (role === 'student') {
-    result = await StudentModel.findOne({ id: userId });
+    result = await StudentModel.findOne({ id: userId }).populate('user');
   }
   if (role === 'faculty') {
-    result = await Faculty.findOne({ id: userId });
+    result = await Faculty.findOne({ id: userId }).populate('user');
   }
   if (role === 'admin') {
-    result = await Admin.findOne({ id: userId });
+    result = await Admin.findOne({ id: userId }).populate('user');
   }
 
+  return result;
+};
+
+// change status
+const changeStatus = async (id: string, payload: { status: string }) => {
+  const result = await User.findByIdAndUpdate(id, payload, { new: true });
   return result;
 };
 
@@ -211,4 +211,5 @@ export const userServices = {
   createFacultyIntoDB,
   createAdminIntoDB,
   getMe,
+  changeStatus,
 };

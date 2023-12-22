@@ -1,9 +1,7 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-// import studentValidationSchema from '../student/student.zod.validation';
 import { userServices } from './user.service';
-import AppError from '../../errors/appError';
 
 // create student
 const createStudent = catchAsync(async (req, res) => {
@@ -49,13 +47,9 @@ const createAdmin = catchAsync(async (req, res) => {
 
 // get me
 const getMe = catchAsync(async (req, res) => {
-  const token = req.headers.authorization;
+  const { userId, role } = req.user;
 
-  if (!token) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
-  }
-
-  const result = await userServices.getMe(token);
+  const result = await userServices.getMe(userId, role);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -65,9 +59,24 @@ const getMe = catchAsync(async (req, res) => {
   });
 });
 
+// change status 
+const changeStatus = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await userServices.changeStatus(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Status is updated successfully',
+    data: result,
+  });
+});
+
 export const userControllers = {
   createStudent,
   createFaculty,
   createAdmin,
   getMe,
+  changeStatus,
 };
