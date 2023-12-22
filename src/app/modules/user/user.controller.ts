@@ -3,6 +3,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 // import studentValidationSchema from '../student/student.zod.validation';
 import { userServices } from './user.service';
+import AppError from '../../errors/appError';
 
 // create student
 const createStudent = catchAsync(async (req, res) => {
@@ -18,8 +19,7 @@ const createStudent = catchAsync(async (req, res) => {
   });
 });
 
-
-// create Faculty 
+// create Faculty
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
 
@@ -33,8 +33,7 @@ const createFaculty = catchAsync(async (req, res) => {
   });
 });
 
-
-// create admin 
+// create admin
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin: adminData } = req.body;
 
@@ -48,9 +47,29 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 
+// get me
+const getMe = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
+  }
+
+  // const { userId, role } = req.user;
+
+  const result = await userServices.getMe(userId, role);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User is retrieved succesfully',
+    data: result,
+  });
+});
 
 export const userControllers = {
   createStudent,
   createFaculty,
-  createAdmin
+  createAdmin,
+  getMe,
 };

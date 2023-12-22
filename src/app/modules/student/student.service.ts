@@ -167,6 +167,7 @@ const deleteStudentFromDB = async (id: string) => {
   }
 };
 
+
 export const studentServices = {
   getAllStudentFromDB,
   getSingleStudentFromDB,

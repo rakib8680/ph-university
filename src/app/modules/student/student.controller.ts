@@ -9,7 +9,7 @@ import { studentServices } from './student.service';
 const getAllStudents = catchAsync(async (req, res) => {
 
   const result = await studentServices.getAllStudentFromDB(req.query);
-  
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -46,10 +46,10 @@ const deleteStudent = catchAsync(async (req, res) => {
 });
 
 
-// update student 
+// update student
 const updateStudent = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const {student} = req.body;
+  const { student } = req.body;
   const result = await studentServices.updateStudentIntoDB(id, student);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -66,5 +66,5 @@ export const studentControllers = {
   getAllStudents,
   getSingleStudent,
   deleteStudent,
-  updateStudent
+  updateStudent,
 };

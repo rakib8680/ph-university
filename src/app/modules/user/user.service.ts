@@ -183,8 +183,15 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
+
+// get me 
+const getMe = async (userId: string, role:string)=>{
+
+}
+
 export const userServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
   createAdminIntoDB,
+  getMe
 };
