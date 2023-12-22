@@ -5,7 +5,11 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 import { StudentModel } from '../student/student.model';
 import { AcademicSemester } from '../academicSemester/academic.Sem.Model';
-import { generateAdminId, generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import mongoose from 'mongoose';
 import AppError from '../../errors/appError';
 import httpStatus from 'http-status';
@@ -14,16 +18,18 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
 
-
-
-
-// create student 
+// create student
 const createStudentIntoDB = async (password: string, payload: Student) => {
   const userData: Partial<TUser> = {};
 
   // set user password and role
   userData.password = password || (config.default_password as string);
+
+  // set student role
   userData.role = 'student';
+
+  // add email to user object
+  userData.email = payload.email;
 
   // find academic semester info
   const admissionSemester = await AcademicSemester.findById(
@@ -60,18 +66,14 @@ const createStudentIntoDB = async (password: string, payload: Student) => {
     await session.endSession();
 
     return newStudent;
-
-    
-  } catch (error : any) {
+  } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
     throw new Error(error);
   }
 };
 
-
-
-// create faculty 
+// create faculty
 const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   // create a user object
   const userData: Partial<TUser> = {};
@@ -81,6 +83,9 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
 
   //set student role
   userData.role = 'faculty';
+
+  // add email to user object
+  userData.email = payload.email;
 
   // find academic department info
   const academicDepartment = await AcademicDepartment.findById(
@@ -128,9 +133,7 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-
-
-// create admin 
+// create admin
 const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   // create a user object
   const userData: Partial<TUser> = {};
@@ -141,6 +144,9 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   //set student role
   userData.role = 'admin';
 
+  // add email to user object
+  userData.email = payload.email;
+
   const session = await mongoose.startSession();
 
   try {
@@ -149,7 +155,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     userData.id = await generateAdminId();
 
     // create a user (transaction-1)
-    const newUser = await User.create([userData], { session }); 
+    const newUser = await User.create([userData], { session });
 
     //create an admin
     if (!newUser.length) {
@@ -177,11 +183,8 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-
-
-
 export const userServices = {
   createStudentIntoDB,
   createFacultyIntoDB,
-  createAdminIntoDB
+  createAdminIntoDB,
 };
