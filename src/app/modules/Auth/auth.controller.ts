@@ -61,6 +61,7 @@ const forgetPassword = catchAsync(async (req, res) => {
 
 const resetPassword = catchAsync(async (req, res) => {
   const token = req.headers.authorization;
+  if (!token) throw new Error('Token not found');
 
   const result = await AuthServices.resetPassword(req.body, token);
   sendResponse(res, {
