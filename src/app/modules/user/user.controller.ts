@@ -55,14 +55,12 @@ const getMe = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Token is required');
   }
 
-  // const { userId, role } = req.user;
-
-  const result = await userServices.getMe(userId, role);
+  const result = await userServices.getMe(token);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User is retrieved succesfully',
+    message: 'User is retrieved successfully',
     data: result,
   });
 });
