@@ -47,7 +47,7 @@ const guardianValidationSchema = z.object({
 // Zod schema for Student
 const CreateStudentValidationSchema = z.object({
   body: z.object({
-    password: z.string(),
+    password: z.string().optional(),
     student: z.object({
       name: userNameValidationSchema,
       email: z.string().email(),
@@ -59,7 +59,7 @@ const CreateStudentValidationSchema = z.object({
       permanentAddress: z.string(),
       guardian: guardianValidationSchema,
       admissionSemester: z.string(),
-      profilePicture: z.string().optional(),
+      // profilePicture: z.string().optional(),
       academicDepartment: z.string(),
     }),
   }),
@@ -79,7 +79,7 @@ const updateStudentValidationSchema = z.object({
       permanentAddress: z.string().optional(),
       guardian: updateGuardianValidationSchema.optional(),
       admissionSemester: z.string().optional(),
-      profilePicture: z.string().optional().optional(),
+      // profilePicture: z.string().optional().optional(),
       academicDepartment: z.string().optional(),
     }),
   }),

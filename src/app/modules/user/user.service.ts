@@ -20,7 +20,11 @@ import { Admin } from '../admin/admin.model';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 // create student
-const createStudentIntoDB = async (password: string, payload: Student) => {
+const createStudentIntoDB = async (
+  file: any,
+  password: string,
+  payload: Student,
+) => {
   const userData: Partial<TUser> = {};
 
   // set user password and role
@@ -46,8 +50,11 @@ const createStudentIntoDB = async (password: string, payload: Student) => {
     // set user id
     userData.id = await generateStudentId(admissionSemester!);
 
+    // set image name
+    const imageName = `${userData?.id}${payload?.name?.firstName}`;
+
     // send image to cloudinary
-    sendImageToCloudinary();
+    sendImageToCloudinary(file?.path, imageName);
 
     // create a user - transaction-1
     const newUser = await User.create([userData], { session });

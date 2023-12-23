@@ -5,9 +5,11 @@ import { userServices } from './user.service';
 
 // create student
 const createStudent = catchAsync(async (req, res) => {
+
+
+
   const { password, student: studentData } = req.body;
-  // const zodParsedData = studentValidationSchema.parse(studentData);
-  const result = await userServices.createStudentIntoDB(password, studentData);
+  const result = await userServices.createStudentIntoDB(req.file,password, studentData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
