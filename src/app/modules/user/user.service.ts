@@ -17,6 +17,7 @@ import { TFaculty } from '../faculty/faculty.interface';
 import { AcademicDepartment } from '../academicDepartment/academicDepartment.model';
 import { Faculty } from '../faculty/faculty.model';
 import { Admin } from '../admin/admin.model';
+import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 
 // create student
 const createStudentIntoDB = async (password: string, payload: Student) => {
@@ -44,6 +45,9 @@ const createStudentIntoDB = async (password: string, payload: Student) => {
 
     // set user id
     userData.id = await generateStudentId(admissionSemester!);
+
+    // send image to cloudinary
+    sendImageToCloudinary();
 
     // create a user - transaction-1
     const newUser = await User.create([userData], { session });
