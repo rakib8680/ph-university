@@ -164,10 +164,33 @@ const updateEnrolledCourseMarksIntoDB = async (
 ) => {
   const { semesterRegistration, offeredCourse, student, courseMarks } = payload;
 
+  const isSemesterRegistrationExists =
+    await SemesterRegistration.findById(semesterRegistration);
+  if (!isSemesterRegistrationExists) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'Semester registration not found !',
+    );
+  }
+
+  const isOfferedCourseExists = await OfferedCourse.findById(offeredCourse);
+  if (!isOfferedCourseExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered course not found !');
+  }
+
+  const isStudentExists = await StudentModel.findById(student);
+  if (!isStudentExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Student not found !');
+  }
+
+  const faculty = await Faculty.findOne({ id: facultyId }, { _id: 1 });
+  if (!faculty) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found !');
+  }
+
+
+
   
-
-
-
 };
 
 export const EnrolledCourseServices = {
