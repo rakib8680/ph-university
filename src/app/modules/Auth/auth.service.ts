@@ -62,6 +62,7 @@ const changePassword = async (
   userData: JwtPayload,
   payload: { oldPassword: string; newPassword: string },
 ) => {
+
   // checking if the user is exist
   const user = await User.isUserExistsByCustomId(userData.userId);
   if (!user) {
@@ -85,7 +86,7 @@ const changePassword = async (
     throw new AppError(httpStatus.UNAUTHORIZED, 'Incorrect password !');
   }
 
-  // hash the new password
+  // hash the new password  
   const newHashedPassword = await bcrypt.hash(
     payload?.newPassword,
     Number(config.bcrypt_salt_rounds),
