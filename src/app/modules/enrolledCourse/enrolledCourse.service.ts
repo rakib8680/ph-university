@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { SemesterRegistration } from '../semesterRegistration/semesterRegistration.model';
 import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
+import { calculateGradeAndPoints } from './enrolledCourse.utils';
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -212,21 +213,26 @@ const updateEnrolledCourseMarksIntoDB = async (
       Math.ceil(classTest2 * 0.1) +
       Math.ceil(finalTerm * 0.5);
 
+    const result = calculateGradeAndPoints(totalMarks);
 
-    if (courseMarks && Object.keys(courseMarks).length) {
-      for (const [key, value] of Object.entries(courseMarks)) {
-        modifiedData[`courseMarks.${key}`] = value;
-      }
-    }
-
-    // const result = await EnrolledCourse.findOneAndUpdate(
-    //   isCourseBelongToFaculty._id,
-    //   modifiedData,
-    //   { new: true },
-    // );
-
-    // return result;
+    modifiedData.grade = result.grade;
+    modifiedData.gradePoints = result.gradePoints;
+    modifiedData.isCompleted = true;
   }
+
+  if (courseMarks && Object.keys(courseMarks).length) {
+    for (const [key, value] of Object.entries(courseMarks)) {
+      modifiedData[`courseMarks.${key}`] = value;
+    }
+  }
+
+  const result = await EnrolledCourse.findOneAndUpdate(
+    isCourseBelongToFaculty._id,
+    modifiedData,
+    { new: true },
+  );
+
+  return result;
 };
 
 export const EnrolledCourseServices = {
