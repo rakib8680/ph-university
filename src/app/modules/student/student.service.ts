@@ -87,8 +87,12 @@ const getAllStudentFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await studentQuery.modelQuery;
+  const meta =await studentQuery.countTotal();
 
-  return result;
+  return {
+    meta,
+    result,
+  };
 };
 
 // get single student
@@ -166,7 +170,6 @@ const deleteStudentFromDB = async (id: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete student');
   }
 };
-
 
 export const studentServices = {
   getAllStudentFromDB,

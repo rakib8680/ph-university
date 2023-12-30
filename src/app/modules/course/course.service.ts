@@ -6,15 +6,11 @@ import { CourseSearchableFields } from './course.constant';
 import { TCourse, TCourseFaculty } from './course.interface';
 import { Course, CourseFaculty } from './course.model';
 
-
-
 // create course
 const createCourseIntoDB = async (payload: TCourse) => {
   const result = await Course.create(payload);
   return result;
 };
-
-
 
 // get all courses
 const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
@@ -28,11 +24,13 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
-  const result = await courseQuery.modelQuery;
-  return result;
+    const result = await courseQuery.modelQuery;
+    const meta = await courseQuery.countTotal();
+  return {
+    meta,
+    result,
+  };
 };
-
-
 
 // get single course
 const getSingleCourseFromDB = async (id: string) => {
@@ -41,8 +39,6 @@ const getSingleCourseFromDB = async (id: string) => {
   );
   return result;
 };
-
-
 
 // update course
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
@@ -64,7 +60,6 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
     if (!updatedBasicCourseInfo) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
     }
-
 
     // check  preRequisiteCourses add and delete
     if (preRequisiteCourses && preRequisiteCourses.length > 0) {
@@ -90,9 +85,6 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
       }
 
-
-
-      
       // add new preRequisiteCourses
       const newPreRequisites = preRequisiteCourses?.filter(
         (el) => el.course && !el.isDeleted,
@@ -113,8 +105,6 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
       }
 
-
-      
       // final result
       const result = await Course.findById(id).populate(
         'preRequisiteCourses.course',
@@ -125,16 +115,12 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
 
     session.commitTransaction();
     session.endSession();
-
-
   } catch (error) {
     session.abortTransaction();
     session.endSession();
     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
   }
 };
-
-
 
 // delete course
 const deleteCourseFromDB = async (id: string) => {
@@ -146,52 +132,53 @@ const deleteCourseFromDB = async (id: string) => {
   return result;
 };
 
-
-// assign faculties 
-const assignFacultiesWithCourseIntoDB = async(id:string, payload: Partial<TCourseFaculty>) =>{
-
-  const result = await  CourseFaculty.findByIdAndUpdate(
+// assign faculties
+const assignFacultiesWithCourseIntoDB = async (
+  id: string,
+  payload: Partial<TCourseFaculty>,
+) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
     id,
     {
       course: id,
       $addToSet: {
         faculties: {
-          $each: payload
-        }
-      }
+          $each: payload,
+        },
+      },
     },
     {
       new: true,
-      upsert: true
-    }
-  )
+      upsert: true,
+    },
+  );
 
   return result;
+};
 
-}
-// remove faculties 
-const removeFacultiesFromCourseFromDB = async(id:string, payload: Partial<TCourseFaculty>) =>{
-
-  const result = await  CourseFaculty.findByIdAndUpdate(
+// remove faculties
+const removeFacultiesFromCourseFromDB = async (
+  id: string,
+  payload: Partial<TCourseFaculty>,
+) => {
+  const result = await CourseFaculty.findByIdAndUpdate(
     id,
     {
       course: id,
       $pull: {
         faculties: {
-          $in: payload
-        }
-      }
+          $in: payload,
+        },
+      },
     },
     {
       new: true,
-      runValidators: true
-    }
-  )
+      runValidators: true,
+    },
+  );
 
   return result;
-
-}
-
+};
 
 export const courseServices = {
   createCourseIntoDB,
@@ -200,5 +187,5 @@ export const courseServices = {
   deleteCourseFromDB,
   updateCourseIntoDB,
   assignFacultiesWithCourseIntoDB,
-  removeFacultiesFromCourseFromDB
+  removeFacultiesFromCourseFromDB,
 };
