@@ -77,6 +77,10 @@ const studentSchema = new Schema<Student, StudentModelInterface>({
     type: Schema.Types.ObjectId,
     ref: 'AcademicDepartment',
   },
+  academicFaculty: {
+    type: Schema.Types.ObjectId,
+    ref: 'AcademicFaculty',
+  },
 });
 
 // // Query Middleware

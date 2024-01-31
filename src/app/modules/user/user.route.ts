@@ -15,7 +15,7 @@ const router = express.Router();
 router.post(
   '/create-student',
 
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
 
   upload.single('file'),
 
@@ -32,7 +32,7 @@ router.post(
 // create faculty
 router.post(
   '/create-faculty',
-  auth(USER_ROLE.admin),
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   validateRequest(createFacultyValidationSchema),
   userControllers.createFaculty,
 );
@@ -40,7 +40,7 @@ router.post(
 // create admin
 router.post(
   '/create-admin',
-  // auth(USER_ROLE.admin),
+  auth(USER_ROLE.superAdmin),
   validateRequest(createAdminValidationSchema),
   userControllers.createAdmin,
 );
@@ -52,7 +52,7 @@ router.get('/me', auth('student', 'faculty', 'admin'), userControllers.getMe);
 
 router.post(
   '/change-status/:id',
-  auth('admin'),
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
   validateRequest(userValidations.changeStatusValidationSchema),
   userControllers.changeStatus,
 );
