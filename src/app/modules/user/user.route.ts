@@ -59,7 +59,16 @@ router.post(
 );
 
 // get myself route
-router.get('/me', auth('student', 'faculty', 'admin'), userControllers.getMe);
+router.get(
+  '/me',
+  auth(
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+    USER_ROLE.superAdmin,
+  ),
+  userControllers.getMe,
+);
 
 // change status
 
