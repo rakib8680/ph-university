@@ -9,13 +9,13 @@ const router = express.Router();
 
 router.get(
   '/',
-  auth(USER_ROLE.admin, USER_ROLE.faculty),
+  auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.superAdmin),
   FacultyControllers.getAllFaculties,
 );
 
 router.get(
   '/:id',
-  auth(USER_ROLE.admin, USER_ROLE.superAdmin),
+  auth(USER_ROLE.admin, USER_ROLE.superAdmin, USER_ROLE.faculty),
   FacultyControllers.getSingleFaculty,
 );
 
