@@ -216,10 +216,6 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
-
-
-
-
 // get My offered course
 const getMyOfferedCoursesFromDB = async (userId: string) => {
   const student = await StudentModel.findOne({ id: userId });
@@ -242,12 +238,29 @@ const getMyOfferedCoursesFromDB = async (userId: string) => {
     );
   }
 
-  return currentOngoingRegistrationSemester;
+  const result = await OfferedCourse.aggregate([
+    {
+      $match: {
+        semesterRegistration: currentOngoingRegistrationSemester?._id,
+        academicFaculty: student.academicFaculty,
+        academicDepartment: student.academicDepartment,
+      },
+    },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: 'course',
+        foreignField: '_id',
+        as: 'course',
+      },
+    },
+    {
+      $unwind: '$course',
+    }
+  ]);
+
+  return result;
 };
-
-
-
-
 
 // get single offered course
 const getSingleOfferedCourseFromDB = async (id: string) => {
