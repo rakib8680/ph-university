@@ -9,6 +9,7 @@ import { Course } from '../course/course.model';
 import { Faculty } from '../faculty/faculty.model';
 import { hasTimeConflict } from './offeredCourse.utils';
 import QueryBuilder from '../../builder/QueryBuilder';
+import { StudentModel } from '../student/student.model';
 
 // create offered corse
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
@@ -215,6 +216,39 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
   };
 };
 
+
+
+
+
+// get My offered course
+const getMyOfferedCoursesFromDB = async (userId: string) => {
+  const student = await StudentModel.findOne({ id: userId });
+  // find the student
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User is not found');
+  }
+
+  //find current ongoing semester
+  const currentOngoingRegistrationSemester = await SemesterRegistration.findOne(
+    {
+      status: 'ONGOING',
+    },
+  );
+
+  if (!currentOngoingRegistrationSemester) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'There is no ongoing semester registration!',
+    );
+  }
+
+  return currentOngoingRegistrationSemester;
+};
+
+
+
+
+
 // get single offered course
 const getSingleOfferedCourseFromDB = async (id: string) => {
   const offeredCourse = await OfferedCourse.findById(id);
@@ -262,4 +296,5 @@ export const OfferedCourseServices = {
   getAllOfferedCoursesFromDB,
   getSingleOfferedCourseFromDB,
   deleteOfferedCourseFromDB,
+  getMyOfferedCoursesFromDB,
 };

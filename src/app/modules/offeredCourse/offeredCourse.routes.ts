@@ -24,11 +24,18 @@ router.get(
   OfferedCourseControllers.getSingleOfferedCourses,
 );
 
+
+
+
 router.get(
   '/my-offered-courses',
   auth(USER_ROLE.student),
-  OfferedCourseControllers.getMyOfferedCourses,
-);
+OfferedCourseControllers.getMyOfferedCourses);
+
+
+
+
+
 
 router.post(
   '/create-offered-course',
