@@ -43,7 +43,7 @@ const createAdmin = catchAsync(async (req, res) => {
   const { password, admin: adminData } = req.body;
 
   const result = await userServices.createAdminIntoDB(
-    req.body,
+    req.file,
     password,
     adminData,
   );
