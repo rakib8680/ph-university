@@ -308,9 +308,9 @@ const getMyOfferedCoursesFromDB = async (userId: string) => {
     },
     {
       $match: {
-        isAlreadyEnrolled: false
-      }
-    }
+        isAlreadyEnrolled: false,
+      },
+    },
   ]);
 
   return result;
@@ -365,3 +365,4 @@ export const OfferedCourseServices = {
   deleteOfferedCourseFromDB,
   getMyOfferedCoursesFromDB,
 };
+
