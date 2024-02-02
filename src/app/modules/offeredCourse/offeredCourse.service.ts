@@ -291,7 +291,46 @@ const getMyOfferedCoursesFromDB = async (userId: string) => {
       },
     },
     {
+      $lookup: {
+        from: 'enrolledcourses',
+        let: {
+          currentStudent: student._id,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ['$student', '$$currentStudent'],
+                  },
+                  {
+                    $eq: ['$isCompleted', true],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'completedCourses',
+      },
+    },
+    {
       $addFields: {
+        completedCourseIds: {
+          $map: {
+            input: '$completedCourses',
+            as: 'completed',
+            in: '$$completed.course',
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        isPreRequisiteFulFilled:{
+
+        },
         isAlreadyEnrolled: {
           $in: [
             '$course._id',
@@ -365,4 +404,3 @@ export const OfferedCourseServices = {
   deleteOfferedCourseFromDB,
   getMyOfferedCoursesFromDB,
 };
-
