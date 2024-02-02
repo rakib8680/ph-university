@@ -75,8 +75,12 @@ const getAllSemesterRegistrationsFromDB = async (
     .fields();
 
   const result = await semesterRegistrationQuery.modelQuery;
+  const meta = await semesterRegistrationQuery.countTotal();
 
-  return result;
+  return {
+    meta,
+    result,
+  };
 };
 
 // get single semester registration
