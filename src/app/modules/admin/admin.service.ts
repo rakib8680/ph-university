@@ -1,18 +1,15 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import httpStatus from "http-status";
-import mongoose from "mongoose";
-import QueryBuilder from "../../builder/QueryBuilder";
-import AppError from "../../errors/appError";
-import { User } from "../user/user.model";
-import { AdminSearchableFields } from "./admin.constant";
-import { TAdmin } from "./admin.interface";
-import { Admin } from "./admin.model";
+import httpStatus from 'http-status';
+import mongoose from 'mongoose';
+import QueryBuilder from '../../builder/QueryBuilder';
+import AppError from '../../errors/appError';
+import { User } from '../user/user.model';
+import { AdminSearchableFields } from './admin.constant';
+import { TAdmin } from './admin.interface';
+import { Admin } from './admin.model';
 
-
-
-// get all admin 
+// get all admin
 const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
   const adminQuery = new QueryBuilder(Admin.find(), query)
     .search(AdminSearchableFields)
@@ -22,10 +19,14 @@ const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await adminQuery.modelQuery;
-  return result;
+  const meta = await adminQuery.countTotal();
+  return {
+    result,
+    meta,
+  };
 };
 
-// get single admin 
+// get single admin
 const getSingleAdminFromDB = async (id: string) => {
   const result = await Admin.findById(id);
   return result;
@@ -51,7 +52,6 @@ const updateAdminIntoDB = async (id: string, payload: Partial<TAdmin>) => {
   });
   return result;
 };
-
 
 // delete admin
 const deleteAdminFromDB = async (id: string) => {
