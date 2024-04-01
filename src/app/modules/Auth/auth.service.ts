@@ -42,7 +42,7 @@ const loginUser = async (payload: TLoginUser) => {
   const accessToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
-    '10d',
+    '30d',
   );
   // create refresh token
   const refreshToken = createToken(

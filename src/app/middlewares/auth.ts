@@ -9,7 +9,7 @@ import { User } from '../modules/user/user.model';
 // middleware for validating access token
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req, res, next) => {
-    // if the token is sent from client
+    // if there is token
     const token = req.headers.authorization;
     if (!token) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
